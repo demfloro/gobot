@@ -55,7 +55,7 @@ type WeatherStruct struct {
 	} `json:"main"`
 	Wind struct {
 		Speed float64 `json:"speed"`
-		Deg   float64     `json:"deg"`
+		Deg   float64 `json:"deg"`
 	} `json:"wind"`
 	Sys struct {
 		Country string `json:"country"`
@@ -368,7 +368,18 @@ func Str2cp1251(input string) (result string) {
 	convert := charmap.Windows1251.NewEncoder()
 	result, err := convert.String(input)
 	if err != nil {
+		var (
+			bytes    []byte
+			TempRune byte
+		)
+
 		log.Printf("Error: %s\n", err)
+
+		for _, v := range input {
+			TempRune, _ = charmap.Windows1251.EncodeRune(v)
+			bytes = append(bytes, TempRune)
+		}
+		result = string(bytes)
 	}
 	return
 }
