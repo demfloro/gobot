@@ -1,0 +1,4 @@
+gobot
+config.toml
+*.boltdb
+test*
