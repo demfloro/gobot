@@ -32,15 +32,21 @@ var (
 	db            *bolt.DB
 	stats         StatStruct
 	// expression to match anything between '!NNN' or !NNNNN and !NNN-NNN !NNNNN-NNN
-	re      = regexp.MustCompile("^\\![\\w]{3,5}(\\-[\\w]{3})?$")
-	splitRe = regexp.MustCompile("-") //for splitting user command
-	isUrl   = regexp.MustCompile("https?://[^\\s]+")
-	convert = charmap.Windows1251.NewDecoder()
+	re           = regexp.MustCompile("^\\![\\w]{3,5}(\\-[\\w]{3})?$")
+	splitRe      = regexp.MustCompile("-") //for splitting user command
+	isUrl        = regexp.MustCompile("https?://[^\\s]+")
+	convert      = charmap.Windows1251.NewDecoder()
+	confFileName = ""
 )
 
 func init() {
 	// no need to lock because no other writer is yet possible
-	_, err := toml.DecodeFile("config.toml", &configuration)
+	if len(os.Args) < 2 {
+		log.Fatal("Not enough arguments, arg list: %s", os.Args)
+	}
+
+	confFileName = os.Args[1]
+	_, err := toml.DecodeFile(confFileName, &configuration)
 	CheckErr(err)
 	stats.Cryptocurrencies = make(map[string]map[string]float64)
 }
@@ -258,7 +264,7 @@ func CryptocurrencyHandler(e *irc.Event) {
 func ReloadConfig() (err error) {
 	var NewConfiguration config
 
-	_, err = toml.DecodeFile("config.toml", &NewConfiguration)
+	_, err = toml.DecodeFile(confFileName, &NewConfiguration)
 	if err != nil {
 		return
 	}
