@@ -420,6 +420,22 @@ func WeatherHandler(e *irc.Event) {
 
 }
 
+func ActionHandler(e *irc.Event) {
+	go func(e *irc.Event) {
+		if isUrl.MatchString(e.Message()) {
+			configLock.RLock()
+			for _, nick := range configuration.Ignore {
+				if e.Nick == nick {
+					configLock.RUnlock()
+					return
+				}
+			}
+			configLock.RUnlock()
+			go TitleHandler(e)
+		}
+	}(e)
+}
+
 func main() {
 	var err error
 
@@ -443,6 +459,7 @@ func main() {
 	}
 	irccon.AddCallback("001", JoinHandler)
 	irccon.AddCallback("PRIVMSG", PrivmsgHandler)
+	irccon.AddCallback("CTCP_ACTION", ActionHandler)
 
 	err = irccon.Connect(configuration.Server)
 	configLock.RUnlock()
