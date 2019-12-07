@@ -297,8 +297,22 @@ func HUPHandler(signals <-chan os.Signal) {
 	}
 }
 
+func blacklisted(msg string) bool {
+	var blacklist = []string{
+		"bash.im",
+		"youtu.be",
+		"youtube.com",
+	}
+	for _, site := range blacklist {
+		if strings.Contains(msg, site) {
+			return true
+		}
+	}
+	return false
+}
+
 func TitleHandler(e *irc.Event) {
-	if strings.Contains(e.Message(), "bash.im") {
+	if blacklisted(e.Message()) {
 		return
 	}
 
