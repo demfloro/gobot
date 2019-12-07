@@ -6,7 +6,7 @@ import (
 
 type config struct {
 	Nick, Realname, Channel, Password, APIJsonLink                            string
-	Server, BashUrl, Database, WeatherURL, WeatherToken                       string
+	Server, BashUrl, Database, WeatherURL, WeatherToken, UserAgent            string
 	TLS, InsecureTLS                                                          bool
 	AdminHosts, Ignore                                                        []string
 	CommandTimeout, BackupTimeout, CrawlTimeout, TitleTimeout, WeatherTimeout time.Duration

@@ -22,6 +22,7 @@ Password = "changepassword"
 Ignore = ["anotherbot"]
 TitleTimeout = 3
 TitleLimit = 3
+UserAgent = "gobot"
 [CityMap]
 "крд" = "Krasnodar,ru"
 "спб" = "Sankt-Peterburg,ru"

@@ -409,8 +409,16 @@ func getRawfile(url string) (response *http.Response, err error) {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
 
-	response, err = client.Get(url)
+	configLock.RLock()
+	userAgent := configuration.UserAgent
+	configLock.RUnlock()
+	request.Header.Set("User-Agent", userAgent)
+	response, err = client.Do(request)
 	if err != nil {
 		return nil, err
 	}
